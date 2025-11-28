@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SVIET College – Student ERP Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #020617;
+      --card: #020617;
+      --accent: #3b82f6;
+      --accent-strong: #2563eb;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+      --border: #1f2937;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 45px rgba(15,23,42,0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* LOGIN SCREEN */
+
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      max-width: 380px;
+      width: 100%;
+      background: radial-gradient(circle at top left, rgba(37,99,235,0.32), #020617);
+      border-radius: 20px;
+      padding: 20px 18px 18px;
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .login-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .login-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 16px;
+      background: radial-gradient(circle at 0 0, #60a5fa, #1d4ed8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 12px 30px rgba(37,99,235,0.8);
+    }
+
+    .login-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .login-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .field input, .field select, .field textarea {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      transition: 0.16s ease;
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(59,130,246,0.6);
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      font-size: 13px;
+      cursor: pointer;
+      background: rgba(15,23,42,0.9);
+      color: var(--text);
+      transition: 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      border-color: rgba(59,130,246,0.9);
+      box-shadow: 0 12px 25px rgba(37,99,235,0.7);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.06);
+      transform: translateY(-0.5px);
+    }
+
+    .btn-ghost {
+      border-color: rgba(148,163,184,0.6);
+      color: var(--muted);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15,23,42,0.96);
+      color: #e5e7eb;
+    }
+
+    .login-hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    #loginError {
+      font-size: 11px;
+      margin-top: 6px;
+      color: #fecaca;
+    }
+
+    /* APP LAYOUT */
+
+    #app {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+      }
+    }
+
+    .sidebar {
+      background: rgba(15,23,42,0.98);
+      border-right: 1px solid rgba(148,163,184,0.25);
+      padding: 18px 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .logo-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 16px;
+      background: radial-gradient(circle at 0 0, #60a5fa, #1d4ed8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 12px 30px rgba(37,99,235,0.8);
+    }
+
+    .logo-text-main {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .logo-text-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .nav-section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin: 10px 4px 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 11px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      color: var(--muted);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: 0.16s ease;
+    }
+
+    .nav-link span.icon {
+      width: 22px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .nav-link.active {
+      background: linear-gradient(135deg, rgba(37,99,235,0.35), rgba(79,70,229,0.35));
+      color: var(--text);
+      border-color: rgba(129,140,248,0.6);
+      box-shadow: 0 12px 25px rgba(37,99,235,0.55);
+    }
+
+    .nav-link:hover:not(.active)) {
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      border-color: rgba(148,163,184,0.35);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--muted);
+      opacity: 0.9;
+      border-top: 1px dashed rgba(148,163,184,0.4);
+      padding-top: 10px;
+      line-height: 1.5;
+    }
+
+    .main {
+      padding: 18px 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .top-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill-badge {
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--muted);
+    }
+
+    .user-mini {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(15,23,42,0.8);
+      border: 1px solid rgba(148,163,184,0.55);
+    }
+
+    .user-mini-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #4f46e5, #22c55e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .user-mini-name {
+      font-size: 12px;
+    }
+
+    .content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(260px, 0.95fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 1000px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .panel.active {
+      display: flex;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.9), #020617);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148,163,184,0.3);
+      padding: 14px 14px 16px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,184,0.45);
+      color: var(--muted);
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 800px) {
+      .grid-3 {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 580px) {
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, rgba(15,23,42,0.96), #020617);
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid rgba(148,163,184,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .stat-extra {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .chip {
+      position: absolute;
+      top: 7px;
+      right: 8px;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(34,197,94,0.12);
+      color: #bbf7d0;
+      border: 1px solid rgba(34,197,94,0.5);
+    }
+
+    .chip.bad {
+      background: rgba(248,113,113,0.12);
+      color: #fecaca;
+      border-color: rgba(248,113,113,0.5);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 1px solid rgba(31,41,55,0.85);
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(15,23,42,0.85);
+    }
+
+    .status-pill {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-pass {
+      background: rgba(34,197,94,0.14);
+      color: #bbf7d0;
+    }
+
+    .status-fail {
+      background: rgba(248,113,113,0.16);
+      color: #fecaca;
+    }
+
+    .status-pending {
+      background: rgba(250,204,21,0.14);
+      color: #facc15;
+    }
+
+    .progress-wrap {
+      width: 100%;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(30,64,175,0.35);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22c55e, #a3e635);
+      width: 0%;
+      transition: width 0.35s ease;
+    }
+
+    .progress-bar.low {
+      background: linear-gradient(90deg, #f97316, #f97373);
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 650px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .muted-help {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 780px) {
+      .profile-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .avatar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .avatar-big {
+      width: 110px;
+      height: 110px;
+      border-radius: 40%;
+      overflow: hidden;
+      border: 2px solid rgba(129,140,248,0.9);
+      box-shadow: 0 15px 35px rgba(37,99,235,0.8);
+      background: radial-gradient(circle at top, #4f46e5, #0f172a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: 700;
+    }
+
+    .avatar-big img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .avatar-name {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .avatar-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .link-btn {
+      font-size: 12px;
+      text-decoration: underline;
+      cursor: pointer;
+      color: #93c5fd;
+    }
+
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .notice-item {
+      font-size: 12px;
+      padding: 5px 7px;
+      border-radius: 8px;
+      border: 1px dashed rgba(148,163,184,0.6);
+      margin-bottom: 6px;
+    }
+
+    .notice-title {
+      font-weight: 500;
+    }
+
+    .notice-meta {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .downloads-list a {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      padding: 6px 7px;
+      border-radius: 8px;
+      border: 1px solid rgba(30,64,175,0.8);
+      margin-bottom: 6px;
+      text-decoration: none;
+      color: var(--text);
+      background: rgba(15,23,42,0.95);
+    }
+
+    .downloads-list a span {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .support-text {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .badge-soft {
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(37,99,235,0.18);
+      border: 1px solid rgba(37,99,235,0.7);
+      color: #bfdbfe;
+    }
+
+    .pill-small {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.6);
+      color: var(--muted);
+    }
+
+    /* Attendance tabs */
+
+    .tab-row {
+      display: inline-flex;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      overflow: hidden;
+      font-size: 12px;
+    }
+
+    .tab-btn {
+      padding: 4px 10px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .tab-btn.active {
+      background: rgba(37,99,235,0.4);
+      color: #e5e7eb;
+    }
+
+    .att-summary-box {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .att-summary-box span,
+    .fees-summary span {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+    }
+
+    .att-filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .att-filter-row .field {
+      margin-bottom: 0;
+    }
+
+    .fees-summary {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-logo">S</div>
+      <div>
+        <div class="login-title">SVIET College – Student Login</div>
+        <div class="login-sub">Demo ERP (front-end only).</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Student ID / Roll No.</label>
+      <input type="text" id="loginId" placeholder="Example: 2025BCA000" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="******">
+    </div>
+
+    <button class="btn btn-primary" id="loginBtn">Login</button>
+
+    </div>
+    <div id="loginError"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo-block">
+        <div class="logo-icon">S</div>
+        <div>
+          <div class="logo-text-main">SVIET ERP</div>
+          <div class="logo-text-sub">Student Portal (BCA)</div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <div class="nav-section-label">Main</div>
+        <div class="nav-link active" data-target="dashboard">
+          <span class="icon">🏠</span>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-link" data-target="fees">
+          <span class="icon">💳</span>
+          <span>Fees & Payments</span>
+        </div>
+        <div class="nav-link" data-target="attendance">
+          <span class="icon">📊</span>
+          <span>Attendance</span>
+        </div>
+        <div class="nav-link" data-target="results">
+          <span class="icon">📑</span>
+          <span>Exam Results</span>
+        </div>
+
+        <div class="nav-section-label">Account</div>
+        <div class="nav-link" data-target="profile">
+          <span class="icon">👤</span>
+          <span>Profile / ERP</span>
+        </div>
+        <div class="nav-link" data-target="support">
+          <span class="icon">🛟</span>
+          <span>Support</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        SVIET College · BCA Demo<br>
+        UI & logic with ChatGPT,<br>
+        <strong>Designed by Harpreet 🙂</strong>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <header class="top-bar">
+        <div class="top-left">
+          <div class="page-title" id="pageTitle">Dashboard</div>
+          <div class="page-subtitle" id="pageSubtitle">
+            Overview of your fees, attendance, results and profile.
+          </div>
+        </div>
+        <div class="top-right">
+          <div class="pill-badge" id="semInfo">2025 • Semester III (BCA)</div>
+          <div class="user-mini">
+            <div class="user-mini-avatar" id="miniAvatar">H</div>
+            <div class="user-mini-name" id="miniName">Student</div>
+          </div>
+        </div>
+      </header>
+
+      <section class="content">
+        <!-- LEFT -->
+        <div>
+          <!-- DASHBOARD -->
+          <section class="panel active" id="dashboard">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Quick Snapshot</div>
+                  <div class="card-subtitle">Current status in SVIET College.</div>
+                </div>
+                <span class="badge-soft">Front-end demo</span>
+              </div>
+
+              <div class="grid-3">
+                <div class="stat-card">
+                  <div class="stat-label">Overall Attendance</div>
+                  <div class="stat-value" id="overallAttendance">0%</div>
+                  <div class="stat-extra">Minimum required: 75%</div>
+                  <div class="chip" id="overallAttChip">Status</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Fees Status (All Sem.)</div>
+                  <div class="stat-value" id="feesStatusText">₹ 0</div>
+                  <div class="stat-extra" id="feesStatusExtra">
+                    Current semester due shown below.
+                  </div>
+                  <div class="chip bad" id="feesChip">Due</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Last Exam Result</div>
+                  <div class="stat-value">PASS</div>
+                  <div class="stat-extra">CGPA: 8.2</div>
+                  <div class="chip">Good 📈</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- FEES -->
+          <section class="panel" id="fees">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Fees Overview (Semester-wise)</div>
+                  <div class="card-subtitle">
+                    Har semester ki total, paid aur due amount.
+                  </div>
+                </div>
+                <span class="tag">Static demo data</span>
+              </div>
+
+              <table id="feesTable">
+                <thead>
+                  <tr>
+                    <th>Semester</th>
+                    <th>Total Fees (₹)</th>
+                    <th>Paid (₹)</th>
+                    <th>Due (₹)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+
+              <div class="fees-summary" id="feesSummary"></div>
+            </div>
+
+            <div class="card" style="margin-top:10px;">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Pay Fees (Demo Form)</div>
+                  <div class="card-subtitle">Yaha se payment request generate hogi (front-end only).</div>
+                </div>
+                <span class="tag">Razorpay/PayU jaisa gateway baad me.</span>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="field">
+                  <label>Student Name</label>
+                  <input type="text" id="feesName">
+                </div>
+                <div class="field">
+                  <label>Roll Number</label>
+                  <input type="text" id="feesRoll">
+                </div>
+                <div class="field">
+                  <label>Course</label>
+                  <select id="feesCourse">
+                    <option selected>BCA</option>
+                    <option>B.Tech CSE</option>
+                    <option>BBA</option>
+                    <option>MCA</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Semester</label>
+                  <select id="feesSem">
+                    <option>Sem I</option>
+                    <option>Sem II</option>
+                    <option selected>Sem III</option>
+                    <option>Sem IV</option>
+                    <option>Sem V</option>
+                    <option>Sem VI</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Fees Amount (₹)</label>
+                  <input type="number" id="feesAmount">
+                  <div class="muted-help">
+                    Normally upar wali table se auto aayega.
+                  </div>
+                </div>
+                <div class="field">
+                  <label>Payment Mode</label>
+                  <select id="feesMode">
+                    <option>UPI</option>
+                    <option>Net Banking</option>
+                    <option>Credit Card</option>
+                    <option>Debit Card</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Remarks (optional)</label>
+                <textarea id="feesRemarks" placeholder="Example: Paying remaining amount for Sem III."></textarea>
+              </div>
+
+              <div class="btn-row">
+                <button class="btn btn-ghost" type="button" id="feesResetBtn">Clear</button>
+                <button class="btn btn-primary" type="button" id="feesPayBtn">
+                  💳 Pay Now
+                </button>
+              </div>
+
+              <div class="muted-help" id="feesMsg" style="margin-top:8px;"></div>
+            </div>
+          </section>
+
+          <!-- ATTENDANCE -->
+          <section class="panel" id="attendance">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Attendance – BCA Sem III</div>
+                  <div class="card-subtitle">
+                    Subject wise + har lecture ki detail.
+                  </div>
+                </div>
+                <div class="tab-row">
+                  <button class="tab-btn active" data-attmode="summary">Subject summary</button>
+                  <button class="tab-btn" data-attmode="lectures">Lecture wise</button>
+                </div>
+              </div>
+
+              <!-- SUBJECT SUMMARY -->
+              <div id="attSummaryBlock">
+                <table id="attendanceTable">
+                  <thead>
+                    <tr>
+                      <th>Subject</th>
+                      <th>Present</th>
+                      <th>Total</th>
+                      <th>%</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+
+              <!-- LECTURE WISE -->
+              <div id="attLectureBlock" style="display:none; margin-top:10px;">
+                <div class="att-filter-row">
+                  <div class="field" style="max-width:160px;">
+                    <label>Subject</label>
+                    <select id="attFilterSubject">
+                      <option value="All">All</option>
+                    </select>
+                  </div>
+                  <div class="field" style="max-width:140px;">
+                    <label>Month</label>
+                    <select id="attFilterMonth">
+                      <option value="All">All</option>
+                      <option value="2025-10">Oct 2025</option>
+                      <option value="2025-11">Nov 2025</option>
+                    </select>
+                  </div>
+                  <button class="btn btn-ghost" type="button" id="attFilterApply">Apply</button>
+                </div>
+
+                <table id="attendanceLectureTable" style="margin-top:6px;">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Subject</th>
+                      <th>Lecture No.</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+
+                <div class="att-summary-box" id="attLectureSummary"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- RESULTS -->
+          <section class="panel" id="results">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Exam Results</div>
+                  <div class="card-subtitle">
+                    Pass / Fail + marks subject wise (demo).
+                  </div>
+                </div>
+                <span class="tag">Static sample data</span>
+              </div>
+
+              <div class="form-grid-2" style="margin-bottom: 10px;">
+                <div class="field">
+                  <label>Exam Type</label>
+                  <select id="examType">
+                    <option>Mid Term</option>
+                    <option selected>End Term</option>
+                    <option>Reappear</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Semester</label>
+                  <select id="resultSem">
+                    <option>Sem I</option>
+                    <option>Sem II</option>
+                    <option selected>Sem III</option>
+                    <option>Sem IV</option>
+                  </select>
+                </div>
+              </div>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Subject</th>
+                    <th>Max</th>
+                    <th>Marks</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="resultsBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- PROFILE -->
+          <section class="panel" id="profile">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Profile & ERP Details</div>
+                  <div class="card-subtitle">SVIET College · BCA</div>
+                </div>
+                <span class="tag">Editable (demo)</span>
+              </div>
+
+              <div class="profile-layout">
+                <!-- Avatar -->
+                <div class="avatar-wrap">
+                  <div class="avatar-big" id="profileAvatar">
+                    <span id="profileAvatarInitials">HS</span>
+                    <img id="profileAvatarImg" alt="Profile" style="display:none;">
+                  </div>
+                  <div class="avatar-name" id="profileNameDisplay">Student</div>
+                  <div class="avatar-meta" id="profileMeta">Roll: - · BCA</div>
+
+                  <label class="link-btn" for="avatarInput">
+                    Change profile picture
+                  </label>
+                  <input type="file" id="avatarInput" class="file-input" accept="image/*">
+
+                  <div class="muted-help">
+                    Demo me image sirf is browser me rahegi.<br>
+                    Real ERP me server pe upload hogi.
+                  </div>
+                </div>
+
+                <!-- Form -->
+                <div>
+                  <div class="form-grid-2">
+                    <div class="field">
+                      <label>Full Name</label>
+                      <input type="text" id="profileName">
+                    </div>
+                    <div class="field">
+                      <label>Mobile Number</label>
+                      <input type="tel" id="profileMobile">
+                    </div>
+                    <div class="field">
+                      <label>Father Name</label>
+                      <input type="text" id="profileFatherName">
+                    </div>
+                    <div class="field">
+                      <label>Father Mobile</label>
+                      <input type="tel" id="profileFatherMobile">
+                    </div>
+                    <div class="field">
+                      <label>Mother Name</label>
+                      <input type="text" id="profileMotherName">
+                    </div>
+                    <div class="field">
+                      <label>Mother Mobile</label>
+                      <input type="tel" id="profileMotherMobile">
+                    </div>
+                    <div class="field">
+                      <label>ERP Email</label>
+                      <input type="email" id="profileEmail">
+                    </div>
+                    <div class="field">
+                      <label>Emergency Contact</label>
+                      <input type="tel" id="profileEmergency">
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label>Address</label>
+                    <textarea id="profileAddress"></textarea>
+                  </div>
+
+                  <div class="btn-row">
+                    <button class="btn btn-ghost" type="button" id="profileReset">Reset</button>
+                    <button class="btn btn-primary" type="button" id="profileSave">
+                      💾 Save to ERP (demo)
+                    </button>
+                  </div>
+
+                  <div class="muted-help" id="profileMsg" style="margin-top:8px;"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- SUPPORT -->
+          <section class="panel" id="support">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Support & Helpdesk</div>
+                  <div class="card-subtitle">Attendance, result, fees – kuch bhi issue.</div>
+                </div>
+                <span class="tag">Helpdesk ticket</span>
+              </div>
+
+              <div class="field">
+                <label>Issue Type</label>
+                <select id="supportType">
+                  <option>Fees related</option>
+                  <option>Attendance correction</option>
+                  <option>Result / Marks issue</option>
+                  <option>Profile / ERP issue</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Subject</label>
+                <input type="text" id="supportSubject" placeholder="Example: Wrong attendance marked in DBMS">
+              </div>
+
+              <div class="field">
+                <label>Describe your issue</label>
+                <textarea id="supportDesc" placeholder="Explain the problem in detail..."></textarea>
+              </div>
+
+              <div class="btn-row">
+                <button class="btn btn-primary" type="button" id="supportSubmit">
+                  📩 Submit Ticket
+                </button>
+              </div>
+
+              <div class="muted-help" id="supportMsg" style="margin-top:8px;"></div>
+            </div>
+          </section>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="side-column">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Notices & Announcements</div>
+                <div class="card-subtitle">SVIET College – Latest updates.</div>
+              </div>
+              <span class="pill-small">From admin (future)</span>
+            </div>
+
+            <div class="notice-item">
+              <div class="notice-title">BCA Mid Term Schedule Released</div>
+              <div class="notice-meta">Download from “Downloads” section.</div>
+            </div>
+            <div class="notice-item">
+              <div class="notice-title">Fees Last Date Extended</div>
+              <div class="notice-meta">New last date: 20 Jan 2026 · Late fine after that.</div>
+            </div>
+            <div class="notice-item">
+              <div class="notice-title">ERP Maintenance</div>
+              <div class="notice-meta">Portal may be slow 12am–2am tonight.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Downloads</div>
+                <div class="card-subtitle">Syllabus, exam schedule, forms etc.</div>
+              </div>
+              <span class="tag">Static links</span>
+            </div>
+
+            <div class="downloads-list">
+              <a href="#">
+                <div>BCA Sem III – Exam Schedule</div>
+                <span>PDF · 280 KB</span>
+              </a>
+              <a href="#">
+                <div>SVIET Academic Calendar 2025–26</div>
+                <span>PDF · 520 KB</span>
+              </a>
+              <a href="#">
+                <div>Hostel Rules & Regulations</div>
+                <span>PDF · 190 KB</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Quick Support</div>
+                <div class="card-subtitle">Contact ERP / admin office.</div>
+              </div>
+            </div>
+
+            <div class="support-text">
+              <strong>ERP Email:</strong> erp.support@sviet.edu<br>
+              <strong>Fees Helpdesk:</strong> +91-98765-11111<br>
+              <strong>Timing:</strong> 9:30 AM – 4:30 PM
+            </div>
+            <div class="support-text">
+              Attendance / result issue ke liye “Support” tab se ticket raise karo.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+  // -------- DEMO USER (jaise DB me hota) --------
+  const demoUser = {
+    id: '2025BCA045',
+    password: '123456',
+    name: 'Harpreet Singh',
+    course: 'BCA',
+    roll: 'BCA-23-045',
+    sem: 3,
+    address: 'SVIET College, Banur, Punjab, India',
+    email: 'harpreet.singh@sviet.edu',
+    mobile: '+91-98765-43210',
+    fatherName: 'Mr. Singh',
+    fatherMobile: '+91-98765-00000',
+    motherName: 'Mrs. Kaur',
+    motherMobile: '+91-98765-11111'
+  };
+
+  // -------- LOGIN --------
+  const loginScreen = document.getElementById('loginScreen');
+  const app = document.getElementById('app');
+  const loginId = document.getElementById('loginId');
+  const loginPass = document.getElementById('loginPass');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
+
+  function doLogin() {
+    const idVal = loginId.value.trim();
+    const passVal = loginPass.value.trim();
+
+    if (idVal.toLowerCase() === demoUser.id.toLowerCase() && passVal === demoUser.password) {
+  loginError.textContent = '';
+  loginScreen.style.display = 'none';
+  app.style.display = 'block';
+  initAfterLogin();
+} else {
+  loginError.textContent = 'Wrong ID or password';
+}
+
+}
+
+  loginBtn.addEventListener('click', doLogin);
+  loginPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+  loginId.addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+
+  // -------- NAVIGATION --------
+  const navLinks = document.querySelectorAll('.nav-link');
+  const panels = document.querySelectorAll('.panel');
+  const pageTitle = document.getElementById('pageTitle');
+  const pageSubtitle = document.getElementById('pageSubtitle');
+
+  const subtitlesMap = {
+    dashboard: 'Overview of your fees, attendance, results and profile.',
+    fees: 'Fees ka detail + payment demo.',
+    attendance: 'Subject wise + lecture wise attendance ek jagah.',
+    results: 'Pass / fail status aur marks.',
+    profile: 'Apni ERP details update karo.',
+    support: 'Koi issue ho to ticket raise karo.'
+  };
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = link.getAttribute('data-target');
+      navLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      panels.forEach(p => p.classList.toggle('active', p.id === target));
+      pageTitle.textContent = link.innerText.trim();
+      pageSubtitle.textContent = subtitlesMap[target] || '';
+    });
+  });
+
+  // -------- ATTENDANCE DATA --------
+  const attendanceData = [
+    { subject: 'Data Structures',       present: 40, total: 46 },
+    { subject: 'DBMS',                  present: 38, total: 45 },
+    { subject: 'Maths-III',             present: 35, total: 44 },
+    { subject: 'Computer Networks',     present: 32, total: 42 },
+    { subject: 'Environment',           present: 25, total: 30 }
+  ];
+
+  const attendanceLectures = [
+    { date: '2025-10-20', subject: 'Data Structures',   lecture: 'L1', type: 'Theory',  status: 'P' },
+    { date: '2025-10-20', subject: 'DBMS',              lecture: 'L2', type: 'Lab',     status: 'P' },
+    { date: '2025-10-21', subject: 'Maths-III',         lecture: 'L1', type: 'Theory',  status: 'A' },
+    { date: '2025-10-22', subject: 'Computer Networks', lecture: 'L3', type: 'Theory',  status: 'P' },
+    { date: '2025-10-22', subject: 'Data Structures',   lecture: 'L4', type: 'Theory',  status: 'P' },
+    { date: '2025-10-23', subject: 'Environment',       lecture: 'L1', type: 'Theory',  status: 'P' },
+    { date: '2025-11-01', subject: 'DBMS',              lecture: 'L1', type: 'Lab',     status: 'A' },
+    { date: '2025-11-01', subject: 'Data Structures',   lecture: 'L2', type: 'Theory',  status: 'P' },
+    { date: '2025-11-02', subject: 'Computer Networks', lecture: 'L1', type: 'Theory',  status: 'A' },
+    { date: '2025-11-03', subject: 'Maths-III',         lecture: 'L2', type: 'Theory',  status: 'P' },
+    { date: '2025-11-03', subject: 'Environment',       lecture: 'L3', type: 'Theory',  status: 'P' },
+    { date: '2025-11-04', subject: 'DBMS',              lecture: 'L4', type: 'Lab',     status: 'P' },
+    { date: '2025-11-05', subject: 'Data Structures',   lecture: 'L1', type: 'Theory',  status: 'A' },
+    { date: '2025-11-06', subject: 'Computer Networks', lecture: 'L2', type: 'Theory',  status: 'P' }
+  ];
+
+  const attendanceTableBody = document.querySelector('#attendanceTable tbody');
+  const attendanceLectureBody = document.querySelector('#attendanceLectureTable tbody');
+  const attLectureSummary = document.getElementById('attLectureSummary');
+  const attFilterSubject = document.getElementById('attFilterSubject');
+  const attFilterMonth = document.getElementById('attFilterMonth');
+  const attFilterApply = document.getElementById('attFilterApply');
+  const overallAttendanceEl = document.getElementById('overallAttendance');
+  const overallAttChip = document.getElementById('overallAttChip');
+
+  function renderAttendanceSummary() {
+    attendanceTableBody.innerHTML = '';
+
+    attendanceData.forEach(row => {
+      const percent = row.total === 0 ? 0 : Math.round((row.present / row.total) * 100);
+      const statusText = percent >= 75 ? 'Safe' : (percent >= 60 ? 'Warning' : 'Short');
+      const statusClass = percent >= 75 ? 'status-pass'
+                        : percent >= 60 ? 'status-pending'
+                        : 'status-fail';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.subject}</td>
+        <td>${row.present}</td>
+        <td>${row.total}</td>
+        <td>
+          <div style="display:flex;flex-direction:column;gap:3px;">
+            <span>${percent}%</span>
+            <div class="progress-wrap">
+              <div class="progress-bar ${percent < 75 ? 'low' : ''}" style="width:${percent}%"></div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="status-pill ${statusClass}">
+            ${statusText}
+          </span>
+        </td>
+      `;
+      attendanceTableBody.appendChild(tr);
+    });
+
+    // TOTAL ROW
+    const totalPresent = attendanceData.reduce((s, r) => s + r.present, 0);
+    const totalLectures = attendanceData.reduce((s, r) => s + r.total, 0);
+    const overallPercent = totalLectures === 0 ? 0 : Math.round((totalPresent / totalLectures) * 100);
+
+    const totalRow = document.createElement('tr');
+    totalRow.innerHTML = `
+      <td><strong>Total</strong></td>
+      <td><strong>${totalPresent}</strong></td>
+      <td><strong>${totalLectures}</strong></td>
+      <td><strong>${overallPercent}%</strong></td>
+      <td></td>
+    `;
+    attendanceTableBody.appendChild(totalRow);
+
+    overallAttendanceEl.textContent = overallPercent + '%';
+    if (overallPercent >= 75) {
+      overallAttChip.textContent = 'Safe ✅';
+      overallAttChip.classList.remove('bad');
+    } else {
+      overallAttChip.textContent = 'Short ⚠';
+      overallAttChip.classList.add('bad');
+    }
+  }
+
+  function fillSubjectFilter() {
+    const subjects = [...new Set(attendanceLectures.map(l => l.subject))];
+    subjects.forEach(sub => {
+      const opt = document.createElement('option');
+      opt.value = sub;
+      opt.textContent = sub;
+      attFilterSubject.appendChild(opt);
+    });
+  }
+
+  function renderAttendanceLectures() {
+    const subject = attFilterSubject.value;
+    const month = attFilterMonth.value;
+
+    let filtered = attendanceLectures.slice();
+    if (subject !== 'All') filtered = filtered.filter(l => l.subject === subject);
+    if (month !== 'All') filtered = filtered.filter(l => l.date.startsWith(month));
+
+    attendanceLectureBody.innerHTML = '';
+    let present = 0, absent = 0;
+
+    filtered.forEach(row => {
+      if (row.status === 'P') present++; else absent++;
+      const statusClass = row.status === 'P' ? 'status-pass' : 'status-fail';
+      const statusText = row.status === 'P' ? 'Present' : 'Absent';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.date}</td>
+        <td>${row.subject}</td>
+        <td>${row.lecture}</td>
+        <td>${row.type}</td>
+        <td>
+          <span class="status-pill ${statusClass}">
+            ${statusText}
+          </span>
+        </td>
+      `;
+      attendanceLectureBody.appendChild(tr);
+    });
+
+    const total = present + absent;
+    const percent = total === 0 ? 0 : Math.round((present / total) * 100);
+    attLectureSummary.innerHTML = `
+      <span>Total lectures: ${total}</span>
+      <span>Present: ${present}</span>
+      <span>Absent: ${absent}</span>
+      <span>Percentage: ${percent}%</span>
+    `;
+  }
+
+  attFilterApply.addEventListener('click', renderAttendanceLectures);
+
+  // attendance tabs
+  const attTabs = document.querySelectorAll('.tab-btn');
+  const attSummaryBlock = document.getElementById('attSummaryBlock');
+  const attLectureBlock = document.getElementById('attLectureBlock');
+
+  attTabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      attTabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.getAttribute('data-attmode');
+      if (mode === 'summary') {
+        attSummaryBlock.style.display = 'block';
+        attLectureBlock.style.display = 'none';
+      } else {
+        attSummaryBlock.style.display = 'none';
+        attLectureBlock.style.display = 'block';
+        renderAttendanceLectures();
+      }
+    });
+  });
+
+  // -------- RESULTS --------
+  const resultsData = [
+    { subject: 'Data Structures',   max: 100, marks: 82, grade: 'A'  },
+    { subject: 'DBMS',              max: 100, marks: 77, grade: 'B+'},
+    { subject: 'Maths-III',         max: 100, marks: 68, grade: 'B' },
+    { subject: 'Computer Networks', max: 100, marks: 49, grade: 'F' },
+    { subject: 'Environment',       max: 50,  marks: 40, grade: 'A' }
+  ];
+  const resultsBody = document.getElementById('resultsBody');
+
+  function renderResults() {
+    resultsBody.innerHTML = '';
+    resultsData.forEach(row => {
+      const passMark = Math.round(row.max * 0.4);
+      const status = row.marks >= passMark ? 'Pass' : 'Fail';
+      const statusClass = row.marks >= passMark ? 'status-pass' : 'status-fail';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.subject}</td>
+        <td>${row.max}</td>
+        <td>${row.marks}</td>
+        <td>${row.grade}</td>
+        <td>
+          <span class="status-pill ${statusClass}">
+            ${status}
+          </span>
+        </td>
+      `;
+      resultsBody.appendChild(tr);
+    });
+  }
+
+  // -------- FEES DATA --------
+  const feesData = [
+    { sem: 1, total: 35000, paid: 35000 },
+    { sem: 2, total: 36000, paid: 32000 },
+    { sem: 3, total: 37000, paid: 25000 },
+    { sem: 4, total: 38000, paid: 0 }
+  ];
+  const feesTableBody = document.querySelector('#feesTable tbody');
+  const feesSummary = document.getElementById('feesSummary');
+  const feesStatusText = document.getElementById('feesStatusText');
+  const feesChip = document.getElementById('feesChip');
+
+  function renderFees() {
+    feesTableBody.innerHTML = '';
+    let totalDueAll = 0, totalPaidAll = 0, totalTotalAll = 0, currentSemDue = 0;
+
+    feesData.forEach(row => {
+      const due = row.total - row.paid;
+      totalDueAll += due;
+      totalPaidAll += row.paid;
+      totalTotalAll += row.total;
+      if (row.sem === demoUser.sem) currentSemDue = due;
+
+      const statusText = due <= 0 ? 'Clear' : 'Due';
+      const statusClass = due <= 0 ? 'status-pass' : 'status-fail';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>Sem ${row.sem}</td>
+        <td>${row.total}</td>
+        <td>${row.paid}</td>
+        <td>${due}</td>
+        <td>
+          <span class="status-pill ${statusClass}">
+            ${statusText}
+          </span>
+        </td>
+      `;
+      feesTableBody.appendChild(tr);
+    });
+
+    feesSummary.innerHTML = `
+      <span>Total Fees: ₹${totalTotalAll}</span>
+      <span>Total Paid: ₹${totalPaidAll}</span>
+      <span>Total Due: ₹${totalDueAll}</span>
+      <span>Current Sem (${demoUser.sem}) Due: ₹${currentSemDue}</span>
+    `;
+
+    feesStatusText.textContent = `₹ ${totalPaidAll} / ${totalTotalAll}`;
+    if (totalDueAll > 0) {
+      feesChip.textContent = 'Due ⚠';
+      feesChip.classList.add('bad');
+    } else {
+      feesChip.textContent = 'Clear ✅';
+      feesChip.classList.remove('bad');
+    }
+  }
+
+  const feesPayBtn = document.getElementById('feesPayBtn');
+  const feesResetBtn = document.getElementById('feesResetBtn');
+  const feesMsg = document.getElementById('feesMsg');
+
+  feesPayBtn.addEventListener('click', () => {
+    const name = document.getElementById('feesName').value.trim();
+    const roll = document.getElementById('feesRoll').value.trim();
+    const amount = document.getElementById('feesAmount').value.trim();
+
+    if (!name || !roll || !amount) {
+      feesMsg.style.color = '#fecaca';
+      feesMsg.textContent = 'Name, roll aur amount fill karo.';
+      return;
+    }
+
+    feesMsg.style.color = '#bbf7d0';
+    feesMsg.textContent =
+      `Demo only: ₹${amount} payment request prepared for ${name} (${roll}). Real me payment gateway + DB update lagega.`;
+  });
+
+  feesResetBtn.addEventListener('click', () => {
+    document.getElementById('feesAmount').value = '';
+    document.getElementById('feesRemarks').value = '';
+    feesMsg.textContent = '';
+  });
+
+  // -------- PROFILE --------
+  const profileNameInput = document.getElementById('profileName');
+  const profileNameDisplay = document.getElementById('profileNameDisplay');
+  const profileMeta = document.getElementById('profileMeta');
+  const miniName = document.getElementById('miniName');
+  const miniAvatar = document.getElementById('miniAvatar');
+  const profileAvatarImg = document.getElementById('profileAvatarImg');
+  const profileAvatarInitials = document.getElementById('profileAvatarInitials');
+  const avatarInput = document.getElementById('avatarInput');
+  const profileMsg = document.getElementById('profileMsg');
+  const profileReset = document.getElementById('profileReset');
+  const profileSave = document.getElementById('profileSave');
+  const semInfo = document.getElementById('semInfo');
+
+  function updateInitials(name) {
+    const parts = name.trim().split(' ').filter(Boolean);
+    const initials = parts.slice(0,2).map(p => p[0].toUpperCase()).join('');
+    profileAvatarInitials.textContent = initials || 'U';
+    miniAvatar.textContent = (initials[0] || 'U');
+  }
+
+  profileNameInput.addEventListener('input', () => {
+    const val = profileNameInput.value || 'Student';
+    profileNameDisplay.textContent = val;
+    miniName.textContent = val;
+    updateInitials(val);
+  });
+
+  avatarInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      profileAvatarImg.src = ev.target.result;
+      profileAvatarImg.style.display = 'block';
+      profileAvatarInitials.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  profileSave.addEventListener('click', () => {
+    profileMsg.style.color = '#bbf7d0';
+    profileMsg.textContent = 'Demo only: details local state me update hui. Real ERP me yahan API call jaayegi.';
+  });
+
+  profileReset.addEventListener('click', () => {
+    loadProfileFromDemo();
+    profileMsg.textContent = '';
+  });
+
+  function loadProfileFromDemo() {
+    profileNameInput.value = demoUser.name;
+    document.getElementById('profileMobile').value = demoUser.mobile;
+    document.getElementById('profileFatherName').value = demoUser.fatherName;
+    document.getElementById('profileFatherMobile').value = demoUser.fatherMobile;
+    document.getElementById('profileMotherName').value = demoUser.motherName;
+    document.getElementById('profileMotherMobile').value = demoUser.motherMobile;
+    document.getElementById('profileEmail').value = demoUser.email;
+    document.getElementById('profileEmergency').value = '+91-99999-99999';
+    document.getElementById('profileAddress').value = demoUser.address;
+
+    profileNameDisplay.textContent = demoUser.name;
+    miniName.textContent = demoUser.name;
+    profileMeta.textContent = `Roll: ${demoUser.roll} · ${demoUser.course}`;
+    updateInitials(demoUser.name);
+    profileAvatarImg.style.display = 'none';
+    profileAvatarInitials.style.display = 'block';
+  }
+
+  // -------- SUPPORT --------
+  const supportSubmit = document.getElementById('supportSubmit');
+  const supportMsg = document.getElementById('supportMsg');
+
+  supportSubmit.addEventListener('click', () => {
+    const type = document.getElementById('supportType').value;
+    const subject = document.getElementById('supportSubject').value.trim();
+    const desc = document.getElementById('supportDesc').value.trim();
+
+    if (!subject || !desc) {
+      supportMsg.style.color = '#fecaca';
+      supportMsg.textContent = 'Subject aur description dono likho.';
+      return;
+    }
+
+    supportMsg.style.color = '#bbf7d0';
+    supportMsg.textContent =
+      `Demo only: "${type}" issue ke liye ticket create ho gaya. Real system me ticket ID + mail admin ko jayega.`;
+  });
+
+  // -------- INIT AFTER LOGIN --------
+  function initAfterLogin() {
+    semInfo.textContent = `2025 • Semester ${demoUser.sem} (BCA)`;
+
+    document.getElementById('feesName').value = demoUser.name;
+    document.getElementById('feesRoll').value = demoUser.roll;
+
+    loadProfileFromDemo();
+    renderAttendanceSummary();
+    fillSubjectFilter();
+    renderAttendanceLectures();
+    renderResults();
+    renderFees();
+  }
+</script>
+
+</body>
+</html>
